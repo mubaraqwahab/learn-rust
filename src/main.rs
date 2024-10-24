@@ -1,34 +1,36 @@
-use rand::Rng;
-use std::cmp::Ordering;
-use std::io;
+#![allow(unused)]
+
+mod examples;
+
+use core::error;
+use examples::game::*;
+use examples::traits::{NewsArticle, Other, Summary, Tweet};
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::ErrorKind;
 
 fn main() {
-    println!("Guess the number!");
+    let myfile_result = File::open("./README.txt");
+    let myfile = match myfile_result {
+        Ok(file) => file,
+        // Err(error:std::io::Error(ErrorKind::NotFound)) => panic!("file not found: {error:?}"),
+        Err(error) => panic!("error opening file: {error:?}"),
+    };
 
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    let n = NewsArticle {
+        headline: String::from("hi"),
+        author: String::from("hi"),
+        content: String::from("h"),
+        location: String::from(""),
+    };
+    n.summarize();
+    // Summary::summarize(&self)
+}
 
-    loop {
-        println!("Input your guess:");
-
-        let mut guess = String::new();
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
-
-        let guess: i32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("Just right!");
-                break;
-            }
-        }
-
-        println!("You guessed {guess}");
+fn round_in_place(v: &mut Vec<f64>) {
+    for n in v {
+        *n = n.round();
     }
 }
+
+fn give_and_take(_v: &mut Vec<i32>) {}
