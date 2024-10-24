@@ -10,21 +10,21 @@ use std::fs::File;
 use std::io::ErrorKind;
 
 fn main() {
-    let myfile_result = File::open("./README.txt");
-    let myfile = match myfile_result {
-        Ok(file) => file,
-        // Err(error:std::io::Error(ErrorKind::NotFound)) => panic!("file not found: {error:?}"),
-        Err(error) => panic!("error opening file: {error:?}"),
-    };
+    // let myfile_result = File::open("./README.txt");
+    // let myfile = match myfile_result {
+    //     Ok(file) => file,
+    //     // Err(error:std::io::Error(ErrorKind::NotFound)) => panic!("file not found: {error:?}"),
+    //     Err(error) => panic!("error opening file: {error:?}"),
+    // };
 
     let n = NewsArticle {
         headline: String::from("hi"),
         author: String::from("hi"),
-        content: String::from("h"),
+        content: String::from("hi there"),
         location: String::from(""),
     };
-    n.summarize();
-    // Summary::summarize(&self)
+    // n.summarize();
+    println!("{}", Other::summarize(&n));
 }
 
 fn round_in_place(v: &mut Vec<f64>) {
