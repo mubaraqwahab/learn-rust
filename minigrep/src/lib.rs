@@ -8,13 +8,19 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Self, &'static str> {
-        if args.len() != 3 {
-            return Err("two arguments expected");
-        }
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Self, &'static str> {
+        args.next();
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("missing query argument"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("missing file path argument"),
+        };
+
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
         Ok(Self {
@@ -50,11 +56,19 @@ pub fn run(config: Config) -> Result<(), String> {
     Ok(())
 }
 
-// TODO: find out if rust fns support default args
-// TODO: find out how to write logical operators in rust
-// TODO: find out if rust fns support keyword args
 // TODO: find out if rust fns support variadic args
 
+/// Returns all lines in `contents` that contain `query`.
+///
+/// The search is case sensitive. For case insensitive search,
+/// use [search_case_insensitively] instead.
+///
+/// # Examples
+///
+/// ```
+/// let contents = vec!["hello", "hey", "hi"].join("\n");
+/// assert_eq!(minigrep::search("he", &contents), vec!["hello", "hey"]);
+/// ```
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     contents
         .lines()
