@@ -1,19 +1,20 @@
 use std::env;
-use std::process;
+use std::error::Error;
 
 use minigrep::run;
 use minigrep::Config;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
 
-    let config = Config::build(&args).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {err}");
-        process::exit(1);
-    });
+    let config = match Config::build(&args) {
+        Ok(c) => c,
+        Err(err) => return Err(format!("problem parsing arguments: {err}").into()),
+    };
 
     if let Err(error) = run(config) {
-        eprintln!("Error: {error}");
-        process::exit(1);
+        return Err(error.into());
     }
+
+    Ok(())
 }
