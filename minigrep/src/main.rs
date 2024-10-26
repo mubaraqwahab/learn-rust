@@ -9,7 +9,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let config = match Config::build(&args) {
         Ok(c) => c,
-        Err(err) => return Err(format!("problem parsing arguments: {err}").into()),
+        Err(error) => return Err(format!("problem parsing arguments: {error}").into()),
     };
 
     if let Err(error) = run(config) {
