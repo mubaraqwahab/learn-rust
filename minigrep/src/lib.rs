@@ -1,5 +1,4 @@
 use std::env;
-use std::error::Error;
 use std::fs;
 
 pub struct Config {
@@ -26,18 +25,22 @@ impl Config {
     }
 }
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = match fs::read_to_string(&config.file_path) {
+pub fn run(config: Config) -> Result<(), String> {
+    let Config {
+        file_path,
+        query,
+        ignore_case,
+    } = config;
+
+    let contents = match fs::read_to_string(&file_path) {
         Ok(text) => text,
-        Err(error) => {
-            return Err(format!("failed to read file {}: {}", config.file_path, error).into())
-        }
+        Err(error) => return Err(format!("failed to read file {file_path}: {error}",)),
     };
 
-    let results = if config.ignore_case {
-        search_case_insensitively(&config.query, &contents)
+    let results = if ignore_case {
+        search_case_insensitively(&query, &contents)
     } else {
-        search(&config.query, &contents)
+        search(&query, &contents)
     };
 
     for line in results {
