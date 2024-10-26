@@ -27,7 +27,12 @@ impl Config {
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents = fs::read_to_string(config.file_path).expect("Failed to read the file");
+    let contents = match fs::read_to_string(&config.file_path) {
+        Ok(text) => text,
+        Err(error) => {
+            return Err(format!("failed to read file {}: {}", config.file_path, error).into())
+        }
+    };
 
     let results = if config.ignore_case {
         search_case_insensitively(&config.query, &contents)
@@ -41,6 +46,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+// TODO: find out if rust fns support default args
+// TODO: find out how to write logical operators in rust
+// TODO: find out if rust fns support keyword args
+// TODO: find out if rust fns support variadic args
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     contents

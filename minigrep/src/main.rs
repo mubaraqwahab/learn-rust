@@ -13,7 +13,7 @@ fn main() {
     });
 
     if let Err(error) = run(config) {
-        eprintln!("Application error: {error}");
+        eprintln!("Error: {error}");
         process::exit(1);
     }
 }
