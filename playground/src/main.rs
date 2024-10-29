@@ -8,37 +8,28 @@ use examples::traits::{NewsArticle, Other, Summary, Tweet};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::ErrorKind;
+use std::sync::mpsc::{self, SendError};
 use std::thread;
+use std::time::Duration;
 
 fn main() {
-    // let myfile_result = File::open("./README.txt");
-    // let myfile = match myfile_result {
-    //     Ok(file) => file,
-    //     // Err(error:std::io::Error(ErrorKind::NotFound)) => panic!("file not found: {error:?}"),
-    //     Err(error) => panic!("error opening file: {error:?}"),
-    // };
+    let (tx, rx) = mpsc::channel();
 
-    // let n = NewsArticle {
-    //     headline: String::from("hi"),
-    //     author: String::from("hi"),
-    //     content: String::from("hi there"),
-    //     location: String::from(""),
-    // };
-    // // n.summarize();
-    // println!("{}", Other::summarize(&n));
+    tx.clone();
 
-    let list = vec![1, 2, 3];
-    println!("Before defining closure: {list:?}");
+    let handle = thread::spawn(move || {
+        let vals = ["hi", "from", "the", "thread"];
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
 
-    thread::spawn(move || println!("From thread: {list:?}"))
-        .join()
-        .unwrap();
+    let handle2 = thread::spawn(move || {
+        for received in rx {
+            println!("Got: {received}");
+        }
+    });
+
+    handle2.join().unwrap();
 }
-
-fn round_in_place(v: &mut Vec<f64>) {
-    for n in v {
-        *n = n.round();
-    }
-}
-
-fn give_and_take(_v: &mut Vec<i32>) {}
