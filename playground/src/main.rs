@@ -2,34 +2,16 @@
 
 mod examples;
 
-use core::error;
-use examples::game::*;
-use examples::traits::{NewsArticle, Other, Summary, Tweet};
-use std::collections::HashMap;
-use std::fs::File;
-use std::io::ErrorKind;
-use std::sync::mpsc::{self, SendError};
-use std::thread;
-use std::time::Duration;
+use examples::hello_async::*;
 
 fn main() {
-    let (tx, rx) = mpsc::channel();
+    let args: Vec<String> = std::env::args().collect();
 
-    tx.clone();
-
-    let handle = thread::spawn(move || {
-        let vals = ["hi", "from", "the", "thread"];
-        for val in vals {
-            tx.send(val).unwrap();
-            thread::sleep(Duration::from_secs(1));
-        }
+    trpl::run(async {
+        let url = &args[1];
+        match page_title(url).await {
+            Some(title) => println!("The title for {url} was {title}"),
+            None => println!("{url} had no title"),
+        };
     });
-
-    let handle2 = thread::spawn(move || {
-        for received in rx {
-            println!("Got: {received}");
-        }
-    });
-
-    handle2.join().unwrap();
 }
