@@ -2,6 +2,7 @@ pub fn run_unsafe() {
     let address = 0x01234usize;
     let r = address as *mut i32;
     let mut n = 2;
+    let mut m = 3;
 
     let naddress = &mut n as *mut i32;
 
@@ -10,5 +11,5 @@ pub fn run_unsafe() {
     values[1] = 11i32;
 
     println!("slice {:?}", values);
-    println!("naddress {:?}", naddress);
+    println!("m {m}");
 }
