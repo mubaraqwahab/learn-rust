@@ -1,3 +1,4 @@
+pub mod file;
 pub mod game;
 pub mod hello_async;
 pub mod hello_unsafe;
