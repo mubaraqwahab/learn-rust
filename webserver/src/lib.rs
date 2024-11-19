@@ -64,8 +64,7 @@ impl Worker {
         let thread = thread::spawn(move || loop {
             // A subtle note here: The lock is automatically released
             // when the transient value receiver.lock() is dropped.
-            // And that value is dropped when immediately after the let
-            // statement.
+            // And that value is dropped immediately after the let stmt.
             let message = receiver.lock().unwrap().recv();
 
             if let Ok(job) = message {
